@@ -1,0 +1,13 @@
+# Mã trong kho này sinh tự động — PR sửa tay sẽ bị ghi đè ở lần sinh kế. Đóng lịch sự, chỉ chỗ góp ý đúng.
+# pull_request_target KHÔNG checkout mã của PR ⇒ an toàn.
+name: dong-pr
+on:
+  pull_request_target: { types: [opened, reopened] }
+permissions: { pull-requests: write }
+jobs:
+  close:
+    runs-on: ubuntu-24.04
+    steps:
+      - env: { GH_TOKEN: "${{ github.token }}", PR: "${{ github.event.pull_request.number }}", REPO: "${{ github.repository }}" }
+        run: |
+          gh pr close "$PR" -R "$REPO" --comment "Cảm ơn bạn! Mã trong kho này được sinh tự động từ OpenAPI của NextX nên không nhận PR sửa trực tiếp — thay đổi sẽ bị ghi đè ở lần sinh kế. Hãy mở issue mô tả điều bạn cần, chúng tôi sẽ đưa vào nguồn sinh. / This repository is generated; please open an issue instead."

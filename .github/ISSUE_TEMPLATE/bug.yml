@@ -1,0 +1,16 @@
+name: Báo lỗi
+description: SDK chạy sai, thiếu kiểu, hoặc không khớp tài liệu
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes: { label: Bản SDK, placeholder: "0.1.0" }
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes: { label: Đoạn mã tái hiện, description: "Che khoá API (nxk_…).", render: text }
+    validations: { required: true }
+  - type: textarea
+    id: actual
+    attributes: { label: Kết quả nhận được / mong đợi }
+    validations: { required: true }
