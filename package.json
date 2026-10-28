@@ -1,7 +1,7 @@
 {
   "name": "@nextxai/sdk",
-  "version": "0.1.0-beta.5",
-  "description": "NextX API cho Node.js và TypeScript — kiểu đầy đủ sinh từ OpenAPI công khai",
+  "version": "0.1.1-beta.11",
+  "description": "Official Node.js and TypeScript client for the NextX API",
   "keywords": [
     "nextx",
     "crm",

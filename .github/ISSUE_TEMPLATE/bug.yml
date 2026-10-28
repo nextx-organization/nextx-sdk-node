@@ -8,7 +8,7 @@ body:
     validations: { required: true }
   - type: textarea
     id: repro
-    attributes: { label: Đoạn mã tái hiện, description: "Che khoá API (nxk_…).", render: text }
+    attributes: { label: Đoạn mã tái hiện, description: "Che khoá API (nxk_...).", render: text }
     validations: { required: true }
   - type: textarea
     id: actual

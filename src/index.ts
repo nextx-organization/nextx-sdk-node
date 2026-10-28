@@ -1,6 +1,5 @@
 /**
- * NextX SDK cho Node.js/TypeScript. Kiểu `paths` sinh từ https://developers.nextx.vn/openapi.json — chỉ gồm các tuyến
- * đối tác gọi được — nên trình soạn thảo gợi đúng đường, tham số và hình dạng phản hồi.
+ * NextX SDK for Node.js and TypeScript. Types are generated from https://developers.nextx.vn/openapi.json.
  *
  *   const nx = createNextXClient({ apiKey: process.env.NEXTX_API_KEY! });
  *   const { data, error } = await nx.GET("/api/v1/crm/contacts", { params: { query: { pageSize: 20 } } });
@@ -16,22 +15,22 @@ export const PROD_URL = "https://api.nextx.vn";
 export const SANDBOX_URL = "https://api-dev.nextx.vn";
 
 export type NextXOptions = {
-  /** Mặc định prod; thử nghiệm dùng `SANDBOX_URL` (khoá sandbox không gọi được prod và ngược lại). */
+  /** Defaults to production. Use `SANDBOX_URL` with a sandbox key for testing. */
   baseUrl?: string;
-  /** Ngôn ngữ thông báo lỗi: `vi` (mặc định) hoặc `en`. */
+  /** Language of error messages: `vi` (default) or `en`. */
   language?: "vi" | "en";
-  /** Thay fetch (proxy, đo đạc, kiểm thử). */
+  /** Custom fetch implementation. */
   fetch?: typeof globalThis.fetch;
 } & (
-  /** Khoá API của workspace (`nxk_…`) — gửi ở header `X-Api-Key`. */
+  /** Workspace API key (`nxk_...`), sent as the `X-Api-Key` header. */
   | { apiKey: string; accessToken?: never }
-  /** Access token OAuth 2.0 của ứng dụng đối tác — gửi `Authorization: Bearer`; có thể là hàm để lấy token mới mỗi lần gọi. */
+  /** OAuth 2.0 access token, sent as `Authorization: Bearer`. May be a function that returns a fresh token per request. */
   | { accessToken: string | (() => string | Promise<string>); apiKey?: never }
 );
 
 export type NextXClient = Client<paths>;
 
-/** Lỗi theo RFC 7807 mà API trả về khi `error` khác rỗng. */
+/** RFC 7807 problem details returned in `error`. */
 export interface NextXProblem {
   type?: string;
   title?: string;
@@ -43,13 +42,12 @@ export interface NextXProblem {
 
 export function createNextXClient(opts: NextXOptions): NextXClient {
   const { baseUrl = PROD_URL, language = "vi", fetch } = opts;
-  if (!opts.apiKey && !opts.accessToken) throw new Error("NextX SDK: cần apiKey hoặc accessToken");
+  if (!opts.apiKey && !opts.accessToken) throw new Error("NextX SDK: apiKey or accessToken is required");
   const client = createClient<paths>({
     baseUrl: baseUrl.replace(/\/+$/, ""),
     fetch,
     headers: {
       "Accept-Language": language,
-      // Trình duyệt tự bỏ User-Agent nên chỉ có tác dụng phía máy chủ.
       "User-Agent": `nextx-sdk-node/${VERSION}`,
       ...(opts.apiKey ? { "X-Api-Key": opts.apiKey } : {}),
     },

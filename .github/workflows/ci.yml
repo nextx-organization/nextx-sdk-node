@@ -1,4 +1,4 @@
-# Kiểm mỗi lần mã sinh được đẩy sang: mã khớp openapi.json (không ai sửa tay), dựng ESM + CJS, test trên Node 18/20/22.
+# Verifies generated code matches openapi.json, then builds and tests on Node 18/20/22.
 name: ci
 on:
   push: { branches: [main, next] }
@@ -13,9 +13,9 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version: "${{ matrix.node }}", cache: npm }
       - run: npm ci --no-audit --no-fund
-      - name: Mã sinh khớp openapi.json
+      - name: Generated code matches openapi.json
         run: |
-          [ "$(shasum -a 256 openapi.json | cut -c1-64)" = "$(node -p 'require("./package.json").nextx.specSha256')" ] || { echo "::error::openapi.json lệch package.json"; exit 1; }
+          [ "$(shasum -a 256 openapi.json | cut -c1-64)" = "$(node -p 'require("./package.json").nextx.specSha256')" ] || { echo "::error::openapi.json does not match package.json"; exit 1; }
           npm run gen && git diff --exit-code -- src/schema.d.ts
       - run: npm run build
       - run: npm test

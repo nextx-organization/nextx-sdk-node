@@ -1,7 +1,6 @@
-# Đăng npm bằng trusted publishing (OIDC) — không có khoá đăng nào trong kho — kèm chứng nhận nguồn gốc.
-#   tag vX.Y.Z (nhánh main) ⇒ bản ổn định, dist-tag "latest", tạo GitHub Release
-#   nhánh next (bản X.Y.Z-beta.N)  ⇒ bản xem trước, dist-tag "beta"
-# Biến kho PUBLISH_ENABLED khác "true" ⇒ chỉ chạy thử (npm publish --dry-run).
+# Publishes to npm via trusted publishing (OIDC) with provenance.
+#   tag vX.Y.Z on main  -> stable release, dist-tag "latest", GitHub Release
+#   branch next         -> prerelease X.Y.Z-beta.N, dist-tag "beta"
 name: release
 on:
   push:
@@ -20,35 +19,31 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version: 22, registry-url: "https://registry.npmjs.org" }
-      - run: npm install -g npm@11.6.2   # trusted publishing cần npm ≥ 11.5.1
-      - name: Xác định bản
+      - run: npm install -g npm@11.6.2
+      - name: Resolve version
         id: v
         run: |
           v=$(node -p 'require("./package.json").version'); n=$(node -p 'require("./package.json").name')
           if [ "$GITHUB_REF_TYPE" = tag ]; then
-            [ "$GITHUB_REF_NAME" = "v$v" ] || { echo "::error::tag $GITHUB_REF_NAME ≠ package.json $v"; exit 1; }
-            case "$v" in *-*) echo "::error::tag ổn định mà bản là pre-release"; exit 1;; esac
+            [ "$GITHUB_REF_NAME" = "v$v" ] || { echo "::error::tag $GITHUB_REF_NAME does not match package.json $v"; exit 1; }
+            case "$v" in *-*) echo "::error::stable tag with a prerelease version"; exit 1;; esac
             tag=latest
           else
-            case "$v" in *-beta.*) ;; *) echo "::error::nhánh next phải mang bản -beta.N (đang $v)"; exit 1;; esac
+            case "$v" in *-beta.*) ;; *) echo "::error::branch next requires a -beta.N version (got $v)"; exit 1;; esac
             tag=beta
           fi
-          if npm view "$n@$v" version >/dev/null 2>&1; then echo "Đã có $n@$v — bỏ qua"; echo "skip=1" >> "$GITHUB_OUTPUT"; fi
+          if npm view "$n@$v" version >/dev/null 2>&1; then echo "$n@$v already published"; echo "skip=1" >> "$GITHUB_OUTPUT"; fi
           echo "version=$v" >> "$GITHUB_OUTPUT"; echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - run: npm ci --no-audit --no-fund
       - run: npm run gen && git diff --exit-code -- src/schema.d.ts
       - run: npm run build && npm test
-      - name: Đăng npm
+      - name: Publish
         if: steps.v.outputs.skip != '1'
-        # Lần đăng ĐẦU TIÊN npm chưa cho cấu hình trusted publisher (gói chưa tồn tại) ⇒ dùng NPM_BOOTSTRAP_TOKEN một lần,
-        # cấu hình trusted publisher xong thì XOÁ secret đó. Không có secret ⇒ npm tự dùng OIDC.
-        env: { BOOT: "${{ secrets.NPM_BOOTSTRAP_TOKEN }}" }
         run: |
-          if [ -n "$BOOT" ]; then export NODE_AUTH_TOKEN="$BOOT"; fi
           if [ "${{ vars.PUBLISH_ENABLED }}" = true ]; then
             npm publish --provenance --access public --tag "${{ steps.v.outputs.tag }}"
           else
-            echo "::notice::PUBLISH_ENABLED chưa bật — chạy thử"; npm publish --dry-run --access public --tag "${{ steps.v.outputs.tag }}"
+            npm publish --dry-run --access public --tag "${{ steps.v.outputs.tag }}"
           fi
       - name: GitHub Release
         if: github.ref_type == 'tag' && vars.PUBLISH_ENABLED == 'true'
