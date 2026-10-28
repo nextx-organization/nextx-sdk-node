@@ -1,0 +1,69 @@
+{
+  "name": "@nextx/sdk",
+  "version": "0.1.0-beta.3",
+  "description": "NextX API cho Node.js và TypeScript — kiểu đầy đủ sinh từ OpenAPI công khai",
+  "keywords": [
+    "nextx",
+    "crm",
+    "sales",
+    "api",
+    "sdk",
+    "openapi",
+    "typescript"
+  ],
+  "homepage": "https://developers.nextx.vn/docs/sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nextx-organization/nextx-sdk-node.git"
+  },
+  "bugs": "https://github.com/nextx-organization/nextx-sdk-node/issues",
+  "license": "MIT",
+  "author": "NextX <support@nextx.vn>",
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "gen": "openapi-typescript openapi.json -o src/schema.d.ts",
+    "build": "rm -rf dist && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && cp src/schema.d.ts dist/esm/ && cp src/schema.d.ts dist/cjs/ && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "openapi-fetch": "0.13.8"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.2",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.6.3"
+  },
+  "nextx": {
+    "specSha256": "8367a4f29bfb55a30084563c2cc698431e06c54edf9e54608de0cbf1768238ed"
+  }
+}
