@@ -1,0 +1,12 @@
+# This repository is generated from the NextX OpenAPI description; direct edits would be overwritten.
+name: close-prs
+on:
+  pull_request_target: { types: [opened, reopened] }
+permissions: { pull-requests: write }
+jobs:
+  close:
+    runs-on: ubuntu-24.04
+    steps:
+      - env: { GH_TOKEN: "${{ github.token }}", PR: "${{ github.event.pull_request.number }}", REPO: "${{ github.repository }}" }
+        run: |
+          gh pr close "$PR" -R "$REPO" --comment "Thanks for the contribution. This repository is generated from the NextX OpenAPI description, so changes made here would be overwritten. Please open an issue describing what you need. / Kho này được sinh từ mô tả OpenAPI của NextX nên không nhận PR sửa trực tiếp. Bạn vui lòng mở issue mô tả nhu cầu."
