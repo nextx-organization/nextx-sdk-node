@@ -1,4 +1,4 @@
-# @nextx/sdk
+# @nextxai/sdk
 
 > Mã trong kho này được sinh tự động từ [OpenAPI công khai](https://developers.nextx.vn/openapi.json). Đừng sửa tay — xem [CONTRIBUTING.md](CONTRIBUTING.md).
 
@@ -6,11 +6,11 @@ Gọi NextX API từ Node.js và TypeScript, có kiểu đầy đủ. Kiểu sin
 và chỉ gồm các tuyến đối tác gọi được, nên trình soạn thảo gợi đúng đường dẫn, tham số và hình dạng phản hồi.
 
 ```sh
-npm i @nextx/sdk
+npm i @nextxai/sdk
 ```
 
 ```ts
-import { createNextXClient, SANDBOX_URL } from "@nextx/sdk";
+import { createNextXClient, SANDBOX_URL } from "@nextxai/sdk";
 
 // Khoá API của workspace (tạo trong phần mềm NextX) — gửi ở header X-Api-Key
 const nx = createNextXClient({ apiKey: process.env.NEXTX_API_KEY!, baseUrl: SANDBOX_URL });

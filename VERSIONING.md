@@ -17,8 +17,8 @@ Mọi thay đổi phá vỡ phải được người duyệt trước khi phát 
 
 | Kênh | npm | PyPI | Ghi chú |
 |---|---|---|---|
-| Ổn định | `npm i @nextx/sdk` | `pip install nextx-sdk` | khớp API prod |
-| Xem trước | `npm i @nextx/sdk@beta` | `pip install --pre nextx-sdk` | bản đang thử nghiệm trước khi lên ổn định — có thể đổi bất kỳ lúc nào |
+| Ổn định | `npm i @nextxai/sdk` | `pip install nextx-sdk` | khớp API prod |
+| Xem trước | `npm i @nextxai/sdk@beta` | `pip install --pre nextx-sdk` | bản đang thử nghiệm trước khi lên ổn định — có thể đổi bất kỳ lúc nào |
 
 ## Bỏ dần
 

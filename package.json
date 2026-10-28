@@ -1,6 +1,6 @@
 {
-  "name": "@nextx/sdk",
-  "version": "0.1.0-beta.3",
+  "name": "@nextxai/sdk",
+  "version": "0.1.0-beta.5",
   "description": "NextX API cho Node.js và TypeScript — kiểu đầy đủ sinh từ OpenAPI công khai",
   "keywords": [
     "nextx",
