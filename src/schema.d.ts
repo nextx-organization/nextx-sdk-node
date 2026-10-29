@@ -5164,6 +5164,8 @@ export interface components {
             devicePin?: string | null;
             appAccountWarning?: string | null;
             contactSyncWarning?: string | null;
+            tagIds?: string[] | null;
+            tagSyncWarning?: string | null;
         };
         SubscriptionSummaryDto: {
             /** Format: uuid */
