@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NextX Open Platform API",
-    "version": "2026-10-28.5",
+    "version": "2026-10-30",
     "description": "API công khai cho đối tác — sinh tự động từ mã nguồn các phân hệ. Xác thực: OAuth 2.0 (Bearer) hoặc khoá API. https://developers.nextx.vn"
   },
   "servers": [
@@ -16917,6 +16917,18 @@
             "nullable": true
           },
           "contactSyncWarning": {
+            "type": "string",
+            "nullable": true
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "tagSyncWarning": {
             "type": "string",
             "nullable": true
           }
