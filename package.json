@@ -1,6 +1,6 @@
 {
   "name": "@nextxai/sdk",
-  "version": "0.1.2-beta.19",
+  "version": "0.2.0-beta.24",
   "description": "Official Node.js and TypeScript client for the NextX API",
   "keywords": [
     "nextx",
@@ -33,6 +33,16 @@
       "require": {
         "types": "./dist/cjs/index.d.ts",
         "default": "./dist/cjs/index.js"
+      }
+    },
+    "./phone": {
+      "import": {
+        "types": "./dist/esm/phone.d.ts",
+        "default": "./dist/esm/phone.js"
+      },
+      "require": {
+        "types": "./dist/cjs/phone.d.ts",
+        "default": "./dist/cjs/phone.js"
       }
     },
     "./package.json": "./package.json"
