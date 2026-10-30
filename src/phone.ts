@@ -143,6 +143,11 @@ export class NextXPhone {
     this.send({ type: "call", number: String(number), contactRef: opts.contactRef });
   }
 
+  /** Nhấc cuộc đang đổ chuông (sự kiện `incoming`) — y như tổng đài viên bấm "Nghe" trong khung. */
+  answer(): void {
+    this.send({ type: "answer" });
+  }
+
   /** Gác cuộc gọi đang diễn ra. */
   hangup(): void {
     this.send({ type: "hangup" });

@@ -46,3 +46,34 @@ test("returns RFC 7807 errors in error", async () => {
   assert.equal(response.status, 403);
   assert.equal(error.status, 403);
 });
+
+// Bộ mẫu chính thức của Standard Webhooks (standard-webhooks/standard-webhooks, thư mục test) — kiểm độc lập với mã ký của NextX.
+const SW = {
+  secret: "whsec_MfKQ9r8GKYqrTwjUPD8ILPZIo2LaLaSw",
+  id: "msg_p5jXN8AQM9LWM0D4loKWxJek",
+  ts: 1614265330,
+  body: '{"test": 2432232314}',
+  sig: "v1,g0hM9SsE+OTPJTGt/tmIKtSyZlE3uFJELVlNIOLJ1OE=",
+};
+
+test("webhooks: khớp bộ mẫu chuẩn Standard Webhooks, ESM + CJS", async () => {
+  const { verifyWebhook, signWebhook } = await import("../dist/esm/webhooks.js");
+  const cjs = createRequire(import.meta.url)("../dist/cjs/webhooks.js");
+  assert.equal(signWebhook(SW.secret, SW.id, SW.ts, SW.body), SW.sig);
+  const headers = { "Webhook-Id": SW.id, "webhook-timestamp": String(SW.ts), "webhook-signature": `v1,khoá-cũ ${SW.sig}` };
+  for (const verify of [verifyWebhook, cjs.verifyWebhook])
+    assert.deepEqual(verify(Buffer.from(SW.body), headers, SW.secret, { now: new Date(SW.ts * 1000) }), { test: 2432232314 });
+});
+
+test("webhooks: chữ ký sai, thân bị sửa, lệch giờ, thiếu header ⇒ ném lỗi", async () => {
+  const { verifyWebhook, WebhookVerificationError } = await import("../dist/esm/webhooks.js");
+  const h = { "webhook-id": SW.id, "webhook-timestamp": String(SW.ts), "webhook-signature": SW.sig };
+  const at = { now: new Date(SW.ts * 1000) };
+  assert.throws(() => verifyWebhook('{"test": 1}', h, SW.secret, at), WebhookVerificationError);
+  assert.throws(() => verifyWebhook(SW.body, { ...h, "webhook-signature": "v1,AAAA" }, SW.secret, at), /không khớp/);
+  assert.throws(() => verifyWebhook(SW.body, h, SW.secret, { now: new Date((SW.ts + 301) * 1000) }), /lệch/);
+  assert.throws(() => verifyWebhook(SW.body, { "webhook-id": SW.id }, SW.secret, at), /thiếu header/);
+  assert.throws(() => verifyWebhook(SW.body, h, "khong-phai-whsec", at), /whsec_/);
+  // Headers của fetch / Request (Next.js route handler, Workers…)
+  assert.deepEqual(verifyWebhook(SW.body, new Headers(h), SW.secret, at), { test: 2432232314 });
+});

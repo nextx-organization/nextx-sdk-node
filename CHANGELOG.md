@@ -2,10 +2,12 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
-## 0.2.1 (2026-10-31)
+## 0.3.0 (2026-10-31)
 
 ### Thêm mới
 
+- Kiểm chữ ký webhook theo chuẩn Standard Webhooks: Node `@nextxai/sdk/webhooks` (`verifyWebhook`, `signWebhook`, kiểu sự kiện `call.*` · `agent.status_changed`), Python `nextx_sdk.webhooks` (`verify_webhook`, `sign_webhook`).
+- `NextXPhone.answer()`: nhấc cuộc đang đổ chuông từ phần mềm của bạn (ví dụ nút "Nghe" trên màn khách hàng khi nhận sự kiện `incoming`). Chuyển máy dùng REST `POST /api/v1/call/partner/calls/{id}/transfer`.
 - `GET /api/v1/call/calls/{id}/transcript`: Transcript STT
 - `GET /api/v1/call/calls/{id}/summary`: AI summary + sentiment
 - `POST /api/v1/call/partner/calls`: Bấm gọi thay tổng đài viên (click-to-call)
