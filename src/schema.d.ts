@@ -210,6 +210,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/call/calls/{id}/transcript": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Transcript STT
+         * @description Transcript segments từ Whisper pipeline. Nếu chưa completed trả segments rỗng.
+         */
+        get: operations["calls_transcript_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/calls/{id}/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * AI summary + sentiment
+         * @description Summary, sentiment, keywords, action items từ Transcription pipeline.
+         */
+        get: operations["calls_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/call/campaigns": {
         parameters: {
             query?: never;
@@ -243,6 +283,150 @@ export interface paths {
          */
         get: operations["ivr_flows_list"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/calls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bấm gọi thay tổng đài viên (click-to-call)
+         * @description Đổ chuông tổng đài viên trước, họ nhấc máy mới quay sang khách. Gửi đúng một trong agentId / agentEmail / extension. Số khách nhận mọi cách viết, trả về E.164. Gửi kèm header Idempotency-Key để bấm lặp không tạo 2 cuộc.
+         */
+        post: operations["partner_calls_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/calls/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Chi tiết một cuộc gọi
+         * @description Cùng hình dạng với data.object của webhook call.*.
+         */
+        get: operations["partner_calls_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/calls/{id}/hangup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Gác máy
+         * @description Cuộc đã kết thúc thì trả trạng thái hiện tại, không lỗi.
+         */
+        post: operations["partner_calls_hangup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/calls/{id}/transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Chuyển máy
+         * @description Chuyển khách sang tổng đài viên khác (toAgent), hàng chờ (toQueueId) hoặc số ngoài (toNumber — chỉ cuộc gọi ra). Gửi đúng một đích.
+         */
+        post: operations["partner_calls_transfer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/calls/{id}/recording": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Link tải ghi âm (15 phút)
+         * @description Mỗi lượt lấy link đều được ghi nhật ký. Hết hạn thì gọi lại để lấy link mới.
+         */
+        get: operations["partner_calls_recording_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/active-calls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cuộc gọi đang diễn ra
+         * @description Khoá giới hạn tổng đài viên chỉ thấy cuộc của các tổng đài viên đó.
+         */
+        get: operations["partner_active_calls_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/call/partner/agents/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Trạng thái tổng đài viên
+         * @description Tìm theo đúng một trong agentId / agentEmail / extension (query).
+         */
+        get: operations["partner_agents_status_get"];
+        /**
+         * Đặt trạng thái tổng đài viên
+         * @description available | paused | offline. Tìm tổng đài viên theo query như GET.
+         */
+        put: operations["partner_agents_status_update"];
         post?: never;
         delete?: never;
         options?: never;
@@ -1904,6 +2088,94 @@ export interface components {
             createdAt?: string;
             isDefaultOutboundCid?: boolean;
         };
+        PartnerSetAgentStatusRequest: {
+            status?: string | null;
+            reason?: string | null;
+        };
+        PartnerAgentStatusDto: {
+            agent?: components["schemas"]["PartnerAgentDto"];
+            status?: string | null;
+            /** Format: date-time */
+            since?: string | null;
+            registered?: boolean;
+        };
+        PartnerAgentDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            userId?: string;
+            name?: string | null;
+            email?: string | null;
+            extension?: string | null;
+        };
+        PartnerRecordingLinkDto: {
+            /** Format: uuid */
+            callId?: string;
+            url?: string | null;
+            /** Format: date-time */
+            expiresAt?: string;
+            contentType?: string | null;
+        };
+        PartnerTransferRequest: {
+            toAgent?: components["schemas"]["PartnerAgentRefRequest"];
+            /** Format: uuid */
+            toQueueId?: string | null;
+            toNumber?: string | null;
+        };
+        PartnerAgentRefRequest: {
+            /** Format: uuid */
+            agentId?: string | null;
+            agentEmail?: string | null;
+            extension?: string | null;
+        };
+        PartnerCallDto: {
+            /** Format: uuid */
+            callId?: string;
+            status?: string | null;
+            direction?: string | null;
+            from?: string | null;
+            to?: string | null;
+            agent?: components["schemas"]["PartnerAgentDto"];
+            /** Format: uuid */
+            queueId?: string | null;
+            queueName?: string | null;
+            /** Format: date-time */
+            startedAt?: string | null;
+            /** Format: date-time */
+            answeredAt?: string | null;
+            /** Format: date-time */
+            endedAt?: string | null;
+            /** Format: int32 */
+            durationSec?: number | null;
+            /** Format: int32 */
+            talkSec?: number | null;
+            /** Format: int32 */
+            waitSec?: number | null;
+            /** Format: int32 */
+            hangupCause?: number | null;
+            hangupCauseName?: string | null;
+            contactRef?: string | null;
+            metadata?: unknown;
+            /** Format: uuid */
+            crmContactId?: string | null;
+            hasRecording?: boolean;
+            hasSummary?: boolean;
+            summary?: string | null;
+        };
+        PartnerOriginateRequest: {
+            /** Format: uuid */
+            agentId?: string | null;
+            agentEmail?: string | null;
+            extension?: string | null;
+            to?: string | null;
+            callerId?: string | null;
+            contactRef?: string | null;
+            metadata?: {
+                [key: string]: string;
+            } | null;
+            /** Format: uuid */
+            crmContactId?: string | null;
+        };
         IvrFlowListResult: {
             items?: components["schemas"]["IvrFlowSummaryDto"][] | null;
             /** Format: int32 */
@@ -1967,6 +2239,40 @@ export interface components {
             endDate?: string | null;
             /** Format: date-time */
             createdAt?: string;
+        };
+        CallSummaryAiDto: {
+            /** Format: uuid */
+            callId?: string;
+            summary?: string | null;
+            sentiment?: string | null;
+            /** Format: double */
+            sentimentScore?: number | null;
+            keywordsDetected?: string[] | null;
+            actionItems?: components["schemas"]["ActionItemDto"][] | null;
+            analysisStatus?: string | null;
+        };
+        ActionItemDto: {
+            text?: string | null;
+            type?: string | null;
+        };
+        CallTranscriptDto: {
+            /** Format: uuid */
+            callId?: string;
+            transcriptStatus?: string | null;
+            segments?: components["schemas"]["TranscriptSegmentDto"][] | null;
+            /** Format: date-time */
+            completedAt?: string | null;
+            analysisStatus?: string | null;
+        };
+        TranscriptSegmentDto: {
+            speaker?: string | null;
+            text?: string | null;
+            /** Format: int32 */
+            startMs?: number;
+            /** Format: int32 */
+            endMs?: number;
+            /** Format: double */
+            confidence?: number;
         };
         CallListResult: {
             items?: components["schemas"]["CallSummaryDto"][] | null;
@@ -5465,6 +5771,7 @@ export interface components {
             invoiceAddress?: string | null;
             invoiceBuyerName?: string | null;
             invoiceEmail?: string | null;
+            autoRenewStatus?: string | null;
         };
         ContractRelationDto: {
             kind?: string | null;
@@ -6035,6 +6342,68 @@ export interface operations {
             };
         };
     };
+    calls_transcript_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CallTranscriptDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    calls_summary_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CallSummaryAiDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
     campaigns_list: {
         parameters: {
             query?: {
@@ -6082,6 +6451,374 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IvrFlowListResult"];
+                };
+            };
+        };
+    };
+    partner_calls_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PartnerOriginateRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerCallDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Bad Gateway */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    partner_calls_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerCallDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    partner_calls_hangup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerCallDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Bad Gateway */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    partner_calls_transfer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PartnerTransferRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerCallDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Bad Gateway */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    partner_calls_recording_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerRecordingLinkDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    partner_active_calls_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerCallDto"][];
+                };
+            };
+        };
+    };
+    partner_agents_status_get: {
+        parameters: {
+            query?: {
+                agentId?: string;
+                agentEmail?: string;
+                extension?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerAgentStatusDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    partner_agents_status_update: {
+        parameters: {
+            query?: {
+                agentId?: string;
+                agentEmail?: string;
+                extension?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PartnerSetAgentStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerAgentStatusDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
