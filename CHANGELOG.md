@@ -2,6 +2,12 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.2.0 (2026-10-30)
+
+### Thêm mới
+
+- `@nextxai/sdk/phone` (chỉ Node): `NextXPhone` — nhúng softphone NextX vào phần mềm của bạn trên trình duyệt (`init`, `call`, `hangup`, `logout`, `destroy`, sự kiện `ready` · `auth-required` · `status` · `incoming` · `answered` · `ended` · `error`). Cùng mã với bản `<script src="https://developers.nextx.vn/phone/v1/phone.js">`.
+
 ## 0.1.2 (2026-10-30)
 
 ### Thêm mới
