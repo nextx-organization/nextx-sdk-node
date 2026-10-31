@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NextX Open Platform API",
-    "version": "2026-10-30",
+    "version": "2026-10-31",
     "description": "API công khai cho đối tác — sinh tự động từ mã nguồn các phân hệ. Xác thực: OAuth 2.0 (Bearer) hoặc khoá API. https://developers.nextx.vn"
   },
   "servers": [
@@ -1017,6 +1017,102 @@
         "operationId": "calls_list"
       }
     },
+    "/api/v1/call/calls/{id}/transcript": {
+      "get": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Transcript STT",
+        "description": "Transcript segments từ Whisper pipeline. Nếu chưa completed trả segments rỗng.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallTranscriptDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.calls.view",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "calls_transcript_get"
+      }
+    },
+    "/api/v1/call/calls/{id}/summary": {
+      "get": {
+        "tags": [
+          "call"
+        ],
+        "summary": "AI summary + sentiment",
+        "description": "Summary, sentiment, keywords, action items từ Transcription pipeline.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallSummaryAiDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.calls.view",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "calls_summary_get"
+      }
+    },
     "/api/v1/call/campaigns": {
       "get": {
         "tags": [
@@ -1157,6 +1253,544 @@
         ],
         "x-mcp-tool": "call_list_ivr_flows",
         "operationId": "ivr_flows_list"
+      }
+    },
+    "/api/v1/call/partner/calls": {
+      "post": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Bấm gọi thay tổng đài viên (click-to-call)",
+        "description": "Đổ chuông tổng đài viên trước, họ nhấc máy mới quay sang khách. Gửi đúng một trong agentId / agentEmail / extension. Số khách nhận mọi cách viết, trả về E.164. Gửi kèm header Idempotency-Key để bấm lặp không tạo 2 cuộc.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartnerOriginateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerCallDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.partner.originate",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_calls_create"
+      }
+    },
+    "/api/v1/call/partner/calls/{id}": {
+      "get": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Chi tiết một cuộc gọi",
+        "description": "Cùng hình dạng với data.object của webhook call.*.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerCallDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.calls.view",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_calls_get"
+      }
+    },
+    "/api/v1/call/partner/calls/{id}/hangup": {
+      "post": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Gác máy",
+        "description": "Cuộc đã kết thúc thì trả trạng thái hiện tại, không lỗi.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerCallDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.partner.originate",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_calls_hangup"
+      }
+    },
+    "/api/v1/call/partner/calls/{id}/transfer": {
+      "post": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Chuyển máy",
+        "description": "Chuyển khách sang tổng đài viên khác (toAgent), hàng chờ (toQueueId) hoặc số ngoài (toNumber — chỉ cuộc gọi ra). Gửi đúng một đích.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartnerTransferRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerCallDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.partner.originate",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_calls_transfer"
+      }
+    },
+    "/api/v1/call/partner/calls/{id}/recording": {
+      "get": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Link tải ghi âm (15 phút)",
+        "description": "Mỗi lượt lấy link đều được ghi nhật ký. Hết hạn thì gọi lại để lấy link mới.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerRecordingLinkDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.recordings.view",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_calls_recording_get"
+      }
+    },
+    "/api/v1/call/partner/active-calls": {
+      "get": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Cuộc gọi đang diễn ra",
+        "description": "Khoá giới hạn tổng đài viên chỉ thấy cuộc của các tổng đài viên đó.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PartnerCallDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.calls.view",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_active_calls_list"
+      }
+    },
+    "/api/v1/call/partner/agents/status": {
+      "get": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Trạng thái tổng đài viên",
+        "description": "Tìm theo đúng một trong agentId / agentEmail / extension (query).",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "agentEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "extension",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerAgentStatusDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.partner.agent_status",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_agents_status_get"
+      },
+      "put": {
+        "tags": [
+          "call"
+        ],
+        "summary": "Đặt trạng thái tổng đài viên",
+        "description": "available | paused | offline. Tìm tổng đài viên theo query như GET.",
+        "parameters": [
+          {
+            "name": "agentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "agentEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "extension",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartnerSetAgentStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartnerAgentStatusDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "call.partner.agent_status",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "operationId": "partner_agents_status_update"
       }
     },
     "/api/v1/call/phone-numbers": {
@@ -7490,6 +8124,268 @@
         },
         "additionalProperties": false
       },
+      "PartnerSetAgentStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerAgentStatusDto": {
+        "type": "object",
+        "properties": {
+          "agent": {
+            "$ref": "#/components/schemas/PartnerAgentDto"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "registered": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerAgentDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "extension": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerRecordingLinkDto": {
+        "type": "object",
+        "properties": {
+          "callId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contentType": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerTransferRequest": {
+        "type": "object",
+        "properties": {
+          "toAgent": {
+            "$ref": "#/components/schemas/PartnerAgentRefRequest"
+          },
+          "toQueueId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "toNumber": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerAgentRefRequest": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "agentEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "extension": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerCallDto": {
+        "type": "object",
+        "properties": {
+          "callId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "type": "string",
+            "nullable": true
+          },
+          "from": {
+            "type": "string",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "nullable": true
+          },
+          "agent": {
+            "$ref": "#/components/schemas/PartnerAgentDto"
+          },
+          "queueId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "queueName": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "answeredAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "durationSec": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "talkSec": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "waitSec": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hangupCause": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hangupCauseName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactRef": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "nullable": true
+          },
+          "crmContactId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "hasRecording": {
+            "type": "boolean"
+          },
+          "hasSummary": {
+            "type": "boolean"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PartnerOriginateRequest": {
+        "type": "object",
+        "properties": {
+          "agentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "agentEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "extension": {
+            "type": "string",
+            "nullable": true
+          },
+          "to": {
+            "type": "string",
+            "nullable": true
+          },
+          "callerId": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactRef": {
+            "type": "string",
+            "nullable": true
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "crmContactId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "IvrFlowListResult": {
         "type": "object",
         "properties": {
@@ -7650,6 +8546,117 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CallSummaryAiDto": {
+        "type": "object",
+        "properties": {
+          "callId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "sentiment": {
+            "type": "string",
+            "nullable": true
+          },
+          "sentimentScore": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "keywordsDetected": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "actionItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionItemDto"
+            },
+            "nullable": true
+          },
+          "analysisStatus": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ActionItemDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CallTranscriptDto": {
+        "type": "object",
+        "properties": {
+          "callId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "transcriptStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "segments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TranscriptSegmentDto"
+            },
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "analysisStatus": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TranscriptSegmentDto": {
+        "type": "object",
+        "properties": {
+          "speaker": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "startMs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "endMs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "confidence": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false
@@ -17794,6 +18801,10 @@
             "nullable": true
           },
           "invoiceEmail": {
+            "type": "string",
+            "nullable": true
+          },
+          "autoRenewStatus": {
             "type": "string",
             "nullable": true
           }

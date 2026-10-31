@@ -31,6 +31,32 @@ for (const c of data.items ?? []) console.log(c.fullName);
 const nx = createNextXClient({ accessToken: () => tokenStore.current() });
 ```
 
+## Nhận webhook
+
+Kiểm chữ ký theo chuẩn [Standard Webhooks](https://www.standardwebhooks.com) (chỉ chạy trên máy chủ). Truyền thân gốc, không phải JSON đã parse:
+
+```ts
+import { verifyWebhook } from "@nextxai/sdk/webhooks";
+
+app.post("/nextx/webhook", express.raw({ type: "application/json" }), (req, res) => {
+  const event = verifyWebhook(req.body, req.headers, process.env.NEXTX_WEBHOOK_SECRET!);
+  if (event.type === "call.completed") console.log(event.data.object.talkSec, event.data.object.contactRef);
+  res.sendStatus(204);
+});
+```
+
+Sai chữ ký hoặc lệch giờ quá 5 phút thì ném `WebhookVerificationError`. Dùng `event.id` để bỏ qua lần giao trùng.
+
+## Softphone nhúng (trình duyệt)
+
+```ts
+import { NextXPhone } from "@nextxai/sdk/phone";
+
+const phone = NextXPhone.init({ clientId: "nxa_…" });
+phone.on("incoming", (c) => openCustomer(c.from));
+phone.call("0901234567");   // phone.answer() · phone.hangup()
+```
+
 ## Ghi chú
 
 - Mặc định client gọi môi trường production. Khi thử nghiệm, dùng `SANDBOX_URL` với khoá sandbox.
