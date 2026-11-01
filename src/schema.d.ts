@@ -5396,6 +5396,7 @@ export interface components {
             /** Format: uuid */
             branchId?: string | null;
             branchName?: string | null;
+            foreignPhone?: string | null;
         };
         MemberByContactDto: {
             /** Format: uuid */
@@ -5772,6 +5773,7 @@ export interface components {
             invoiceBuyerName?: string | null;
             invoiceEmail?: string | null;
             autoRenewStatus?: string | null;
+            memberForeignPhone?: string | null;
         };
         ContractRelationDto: {
             kind?: string | null;

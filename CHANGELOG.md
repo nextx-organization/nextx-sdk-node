@@ -2,6 +2,13 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.3.1 (2026-11-02)
+
+### Thêm mới
+
+- `#/MemberLookupDto`: Thêm trường foreignPhone
+- `#/ContractSummaryDto`: Thêm trường memberForeignPhone
+
 ## 0.3.0 (2026-10-31)
 
 ### Thêm mới

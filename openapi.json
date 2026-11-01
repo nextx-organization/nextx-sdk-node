@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NextX Open Platform API",
-    "version": "2026-10-31",
+    "version": "2026-11-02",
     "description": "API công khai cho đối tác — sinh tự động từ mã nguồn các phân hệ. Xác thực: OAuth 2.0 (Bearer) hoặc khoá API. https://developers.nextx.vn"
   },
   "servers": [
@@ -17688,6 +17688,10 @@
           "branchName": {
             "type": "string",
             "nullable": true
+          },
+          "foreignPhone": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -18805,6 +18809,10 @@
             "nullable": true
           },
           "autoRenewStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberForeignPhone": {
             "type": "string",
             "nullable": true
           }
