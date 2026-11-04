@@ -4462,6 +4462,7 @@ export interface components {
             deliveryPhone?: string | null;
             customerInfo?: components["schemas"]["OrderListCustomerInfoDto"];
             outletInfo?: components["schemas"]["OrderListOutletInfoDto"];
+            receivingBankLabel?: string | null;
         };
         OrderListOutletInfoDto: {
             code?: string | null;
@@ -4493,6 +4494,9 @@ export interface components {
             paymentMethod?: string | null;
             /** Format: double */
             amount?: number;
+            /** Format: uuid */
+            bankAccountId?: string | null;
+            bankAccountLabel?: string | null;
         };
         ExportOrdersResult: {
             /** Format: uuid */
@@ -7250,6 +7254,7 @@ export interface operations {
                 toDate?: string;
                 keyword?: string;
                 source?: string;
+                branchId?: string;
             };
             header?: never;
             path?: never;
@@ -7327,6 +7332,7 @@ export interface operations {
             query?: {
                 fromDate?: string;
                 toDate?: string;
+                branchId?: string;
             };
             header?: never;
             path?: never;
@@ -7419,6 +7425,8 @@ export interface operations {
                 orgUnitId?: string;
                 page?: number;
                 pageSize?: number;
+                branchId?: string;
+                allBranches?: boolean;
             };
             header?: never;
             path?: never;
@@ -7497,6 +7505,8 @@ export interface operations {
                 page?: number;
                 pageSize?: number;
                 includeDuplicates?: boolean;
+                branchId?: string;
+                allBranches?: boolean;
             };
             header?: never;
             path?: never;
@@ -8025,6 +8035,7 @@ export interface operations {
                 cashAccountId?: string;
                 bankAccountId?: string;
                 unassigned?: boolean;
+                approved?: boolean;
             };
             header?: never;
             path?: never;

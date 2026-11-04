@@ -1,6 +1,6 @@
 {
   "name": "@nextxai/sdk",
-  "version": "0.3.1-beta.36",
+  "version": "0.3.3-beta.43",
   "description": "Official Node.js and TypeScript client for the NextX API",
   "keywords": [
     "nextx",
@@ -84,6 +84,6 @@
     "typescript": "5.6.3"
   },
   "nextx": {
-    "specSha256": "f629acf0f18333a2e53e6b013e49dadc3ebfb5ca75f2dc7877557be0cb10c241"
+    "specSha256": "39002bf685de22eccee072f757749146bb368dd00a36ea66ac7e639ab0c42fe0"
   }
 }

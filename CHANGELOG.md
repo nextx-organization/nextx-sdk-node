@@ -2,6 +2,27 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.3.3 (2026-11-05)
+
+### Thêm mới
+
+- `GET /api/v1/einvoice/invoices`: Thêm tham số query:branchId
+- `GET /api/v1/einvoice/reports/summary`: Thêm tham số query:branchId
+- `GET /api/v1/hrm/attendance/clock-history/daily`: Thêm tham số query:branchId
+- `GET /api/v1/hrm/attendance/clock-history/daily`: Thêm tham số query:allBranches
+- `GET /api/v1/hrm/attendance/raw-punches`: Thêm tham số query:branchId
+- `GET /api/v1/hrm/attendance/raw-punches`: Thêm tham số query:allBranches
+- `GET /api/v1/sales/orders`: Thêm tham số query:approved
+- `#/OrderListDto`: Thêm trường receivingBankLabel
+- `#/OrderPaymentEntryDto`: Thêm trường bankAccountId
+- `#/OrderPaymentEntryDto`: Thêm trường bankAccountLabel
+
+## 0.3.2 (2026-11-04)
+
+### Sửa mô tả
+
+- `(chung)`: Đổi mô tả/ví dụ
+
 ## 0.3.1 (2026-11-02)
 
 ### Thêm mới
