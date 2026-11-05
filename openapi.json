@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NextX Open Platform API",
-    "version": "2026-10-31",
+    "version": "2026-11-05",
     "description": "API công khai cho đối tác — sinh tự động từ mã nguồn các phân hệ. Xác thực: OAuth 2.0 (Bearer) hoặc khoá API. https://developers.nextx.vn"
   },
   "servers": [
@@ -2941,6 +2941,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -3082,6 +3090,14 @@
             "schema": {
               "type": "string",
               "format": "date"
+            }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -3292,6 +3308,22 @@
               "format": "int32",
               "default": 50
             }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "allBranches",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -3494,6 +3526,22 @@
           },
           {
             "name": "includeDuplicates",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "allBranches",
             "in": "query",
             "schema": {
               "type": "boolean",
@@ -5026,6 +5074,13 @@
           },
           {
             "name": "unassigned",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "approved",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -14906,6 +14961,10 @@
           },
           "outletInfo": {
             "$ref": "#/components/schemas/OrderListOutletInfoDto"
+          },
+          "receivingBankLabel": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -15008,6 +15067,15 @@
           "amount": {
             "type": "number",
             "format": "double"
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "bankAccountLabel": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -17688,6 +17756,10 @@
           "branchName": {
             "type": "string",
             "nullable": true
+          },
+          "foreignPhone": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -18805,6 +18877,10 @@
             "nullable": true
           },
           "autoRenewStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "memberForeignPhone": {
             "type": "string",
             "nullable": true
           }
