@@ -2,6 +2,16 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.3.5
+
+- Sửa quyền của API trả hàng thành `sales.customer_returns.view`.
+
+## 0.3.4 (2026-11-05)
+
+### Sửa mô tả
+
+- `(chung)`: Đổi mô tả/ví dụ
+
 ## 0.3.3 (2026-11-05)
 
 ### Thêm mới

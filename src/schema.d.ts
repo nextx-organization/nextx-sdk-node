@@ -1179,6 +1179,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/cashbook/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách bút toán quỹ (append-only)
+         * @description Nguồn của báo cáo dòng tiền. Lọc theo quỹ, loại giao dịch (CREDIT/DEBIT), khoảng ngày, tài khoản ngân hàng.
+         */
+        get: operations["cashbook_transactions_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/customers": {
         parameters: {
             query?: never;
@@ -1191,6 +1211,66 @@ export interface paths {
          * @description Lấy danh sách khách hàng theo workspace, có hỗ trợ lọc và phân trang.
          */
         get: operations["customers_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/goods-receipts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách phiếu nhập
+         * @description Hỗ trợ search theo mã phiếu, filter branch/supplier/status, pagination.
+         */
+        get: operations["goods_receipts_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/inventory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tồn kho hiện tại theo chi nhánh
+         * @description Tổng hợp tồn kho theo chi nhánh (nguồn stock_by_branch). Filter: branchId, productId, status (out_of_stock|low_stock|in_stock), search (mã hoặc tên SP). sortBy: sku|name|onhand|reserved|available|avgcost|status (mặc định tên SP tăng dần), sortDir: asc|desc. Lọc/sắp xếp/phân trang chạy dưới SQL. pageSize = 0 → lấy TẤT CẢ.
+         */
+        get: operations["inventory_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/inventory/movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sổ cái biến động tồn kho toàn cục
+         * @description Hợp nhất nhập–xuất vật lý (stock_movements) + đặt giữ (stock_reservations) của mọi sản phẩm. Filter: branchId, group (RECEIPT/ISSUE/RETURN/ADJUST/TRANSFER/DISPOSAL/RESERVE), productId, search, dateFrom, dateTo. Mặc định FE lọc theo chi nhánh đang chọn. Server resolve sẵn tên SP / kho / người tạo / mã chứng từ. sortBy: quantity/type/before/balance/document (mặc định thời gian desc); sortDir: asc/desc. Tên SP / SKU / kho / người tạo / khách / nhóm hàng KHÔNG sort được: chúng được gắn SAU khi phân trang. categoryId: lọc theo nhóm hàng hoá (gồm cả nhóm con); mỗi dòng trả kèm categoryId/categoryName.
+         */
+        get: operations["inventory_movements_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1239,6 +1319,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/orders/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Thay đổi đơn hàng để tải tăng dần
+         * @description Phân trang bằng cursor, không đếm và không tính tổng. Có đơn đã xoá (isDeleted). Lần đầu truyền updatedSince, các lần sau truyền nextCursor. limit tối đa 1000.
+         */
+        get: operations["orders_changes_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/orders": {
         parameters: {
             query?: never;
@@ -1271,6 +1371,26 @@ export interface paths {
          * @description `excludeReturnId`: bỏ qua phiếu hoàn đó khi tính `openReturnQuantity` từng dòng. Dành cho màn SỬA phiếu hoàn — không truyền thì chính phiếu đang sửa tự giữ chỗ số lượng của nó, mọi dòng ra 0 còn-trả-được và form sửa hiện trắng.
          */
         get: operations["orders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/order-returns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Danh sách đơn hoàn trả
+         * @description Filter: status, orderId, returnType, branchId, date range, reason (lý do trả hàng — so khớp chính xác), crmContactId, outletId (match cả phiếu tự ghi lẫn phiếu suy từ đơn gốc). Tìm kiếm theo mã phiếu hoàn.
+         */
+        get: operations["order_returns_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1597,6 +1717,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/crm/contacts/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Thay đổi contacts để tải tăng dần
+         * @description Phân trang bằng cursor, không đếm. Có bản ghi đã xoá (isDeleted), không có tên, SĐT, email. limit tối đa 1000.
+         */
+        get: operations["contacts_changes_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/crm/contacts/facets": {
         parameters: {
             query?: never;
@@ -1649,6 +1789,26 @@ export interface paths {
          * @description Bao gồm thông tin customer profile, tags, leads liên kết và thông tin nhà cung cấp từ Sales.
          */
         get: operations["contacts_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/crm/opportunities/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Thay đổi cơ hội để tải tăng dần
+         * @description Phân trang bằng cursor, không đếm. Có bản ghi đã xoá (isDeleted). limit tối đa 1000.
+         */
+        get: operations["opportunities_changes_list"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4039,6 +4199,129 @@ export interface components {
             /** Format: double */
             totalQuantity?: number;
         };
+        OrderReturnListResult: {
+            items?: components["schemas"]["OrderReturnListDto"][] | null;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+            readonly hasNextPage?: boolean;
+            readonly hasPreviousPage?: boolean;
+            summary?: components["schemas"]["OrderReturnListSummaryDto"];
+        };
+        OrderReturnListSummaryDto: {
+            /** Format: double */
+            totalRefund?: number;
+            /** Format: double */
+            totalGrandTotal?: number;
+        };
+        OrderReturnListDto: {
+            /** Format: uuid */
+            id?: string;
+            returnCode?: string | null;
+            /** Format: uuid */
+            orderId?: string;
+            status?: string | null;
+            reason?: string | null;
+            returnType?: string | null;
+            /** Format: double */
+            refundAmount?: number;
+            refundMethod?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            isFullReturn?: boolean;
+            notes?: string | null;
+            /** Format: date-time */
+            completedAt?: string | null;
+            /** Format: uuid */
+            branchId?: string | null;
+            /** Format: double */
+            grandTotal?: number;
+            /** Format: double */
+            refundPercent?: number;
+            createdByName?: string | null;
+            contactName?: string | null;
+            contactPhone?: string | null;
+            refundPaymentRows?: components["schemas"]["OrderReturnRefundPaymentRowDto"][] | null;
+            /** Format: double */
+            settlementAmount?: number;
+            settlementDirection?: string | null;
+            /** Format: double */
+            settledAmount?: number;
+            settledPaymentRows?: components["schemas"]["OrderReturnRefundPaymentRowDto"][] | null;
+            /** Format: uuid */
+            exchangeNewOrderId?: string | null;
+            /** Format: double */
+            exchangeGrandTotal?: number;
+            /** Format: double */
+            priceDiff?: number;
+            /** Format: date-time */
+            returnDate?: string | null;
+            /** Format: uuid */
+            crmContactId?: string | null;
+            /** Format: uuid */
+            outletId?: string | null;
+            /** Format: double */
+            maxCashRefund?: number;
+            forceFullCashRefund?: boolean;
+            /** Format: uuid */
+            refundBankAccountId?: string | null;
+            refundBankAccountLabel?: string | null;
+            branchName?: string | null;
+            deliveryAddress?: string | null;
+            assignedToName?: string | null;
+            assignees?: components["schemas"]["OrderAssigneeDto"][] | null;
+            receivingBranchIds?: string[] | null;
+            receivingBranchNames?: string[] | null;
+            deliveryEmployee?: components["schemas"]["UserRefDto"];
+            /** Format: date-time */
+            deliveredAt?: string | null;
+            customerCode?: string | null;
+            customerInfo?: components["schemas"]["OrderListCustomerInfoDto"];
+            outletInfo?: components["schemas"]["OrderListOutletInfoDto"];
+        };
+        OrderListOutletInfoDto: {
+            code?: string | null;
+            name?: string | null;
+            ownerName?: string | null;
+            ownerPhone?: string | null;
+            address?: string | null;
+            channelCode?: string | null;
+            tier?: string | null;
+            repNames?: string | null;
+            routeNames?: string | null;
+            taxCode?: string | null;
+        };
+        OrderListCustomerInfoDto: {
+            groupName?: string | null;
+            email?: string | null;
+            companyName?: string | null;
+            taxCode?: string | null;
+            /** Format: double */
+            netDebt?: number;
+            ownerName?: string | null;
+        };
+        UserRefDto: {
+            /** Format: uuid */
+            id?: string;
+            name?: string | null;
+        };
+        OrderAssigneeDto: {
+            /** Format: uuid */
+            userId?: string;
+            name?: string | null;
+            /** Format: double */
+            commissionPercent?: number;
+        };
+        OrderReturnRefundPaymentRowDto: {
+            method?: string | null;
+            /** Format: double */
+            amount?: number;
+        };
         OrderDetailDto: {
             /** Format: uuid */
             id?: string;
@@ -4230,18 +4513,6 @@ export interface components {
             value?: number | null;
             /** Format: double */
             amount?: number;
-        };
-        OrderAssigneeDto: {
-            /** Format: uuid */
-            userId?: string;
-            name?: string | null;
-            /** Format: double */
-            commissionPercent?: number;
-        };
-        UserRefDto: {
-            /** Format: uuid */
-            id?: string;
-            name?: string | null;
         };
         OrderItemDto: {
             /** Format: uuid */
@@ -4463,27 +4734,8 @@ export interface components {
             customerInfo?: components["schemas"]["OrderListCustomerInfoDto"];
             outletInfo?: components["schemas"]["OrderListOutletInfoDto"];
             receivingBankLabel?: string | null;
-        };
-        OrderListOutletInfoDto: {
-            code?: string | null;
-            name?: string | null;
-            ownerName?: string | null;
-            ownerPhone?: string | null;
-            address?: string | null;
-            channelCode?: string | null;
-            tier?: string | null;
-            repNames?: string | null;
-            routeNames?: string | null;
-            taxCode?: string | null;
-        };
-        OrderListCustomerInfoDto: {
-            groupName?: string | null;
-            email?: string | null;
-            companyName?: string | null;
-            taxCode?: string | null;
-            /** Format: double */
-            netDebt?: number;
-            ownerName?: string | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
         };
         OrderPaymentEntryDto: {
             /** Format: uuid */
@@ -4497,6 +4749,48 @@ export interface components {
             /** Format: uuid */
             bankAccountId?: string | null;
             bankAccountLabel?: string | null;
+        };
+        OrderChangesResult: {
+            items?: components["schemas"]["OrderChangeDto"][] | null;
+            nextCursor?: string | null;
+            hasMore?: boolean;
+        };
+        OrderChangeDto: {
+            /** Format: uuid */
+            id?: string;
+            code?: string | null;
+            orderType?: string | null;
+            status?: string | null;
+            /** Format: uuid */
+            crmContactId?: string | null;
+            /** Format: uuid */
+            branchId?: string;
+            /** Format: double */
+            subtotal?: number;
+            /** Format: double */
+            discountAmount?: number;
+            /** Format: double */
+            taxAmount?: number;
+            /** Format: double */
+            shippingFee?: number;
+            /** Format: double */
+            total?: number;
+            /** Format: double */
+            paidAmount?: number;
+            channelCode?: string | null;
+            /** Format: date-time */
+            orderDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            confirmedAt?: string | null;
+            /** Format: date-time */
+            cancelledAt?: string | null;
+            /** Format: date-time */
+            updatedAt?: string;
+            isDeleted?: boolean;
+            /** Format: date-time */
+            deletedAt?: string | null;
         };
         ExportOrdersResult: {
             /** Format: uuid */
@@ -4517,6 +4811,187 @@ export interface components {
             paidAmount?: number;
             /** Format: double */
             debtAmount?: number;
+        };
+        StockMovementListResult: {
+            items?: components["schemas"]["StockMovementListDto"][] | null;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+            readonly hasNextPage?: boolean;
+            readonly hasPreviousPage?: boolean;
+            summary?: components["schemas"]["StockMovementListSummaryDto"];
+        };
+        StockMovementListSummaryDto: {
+            /** Format: double */
+            totalIn?: number;
+            /** Format: double */
+            totalOut?: number;
+            /** Format: double */
+            totalValue?: number;
+        };
+        StockMovementListDto: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: date-time */
+            occurredAt?: string;
+            source?: string | null;
+            /** Format: uuid */
+            productId?: string;
+            productName?: string | null;
+            sku?: string | null;
+            movementType?: string | null;
+            group?: string | null;
+            direction?: string | null;
+            /** Format: double */
+            quantity?: number;
+            /** Format: double */
+            beforeQuantity?: number | null;
+            /** Format: double */
+            afterQuantity?: number | null;
+            /** Format: uuid */
+            branchId?: string;
+            branchName?: string | null;
+            referenceType?: string | null;
+            /** Format: uuid */
+            referenceId?: string | null;
+            referenceCode?: string | null;
+            customerCode?: string | null;
+            customerName?: string | null;
+            /** Format: uuid */
+            createdById?: string | null;
+            createdByName?: string | null;
+            isReversal?: boolean;
+            /** Format: double */
+            unitPrice?: number | null;
+            /** Format: double */
+            unitCost?: number | null;
+            notes?: string | null;
+            /** Format: uuid */
+            categoryId?: string | null;
+            categoryName?: string | null;
+        };
+        PagedResultOfInventoryItemDto: {
+            items?: components["schemas"]["InventoryItemDto"][] | null;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+            readonly hasNextPage?: boolean;
+            readonly hasPreviousPage?: boolean;
+        };
+        InventoryItemDto: {
+            /** Format: uuid */
+            productId?: string;
+            sku?: string | null;
+            productName?: string | null;
+            productType?: string | null;
+            /** Format: double */
+            qtyOnHand?: number;
+            /** Format: double */
+            qtyReserved?: number;
+            /** Format: double */
+            qtyAvailable?: number;
+            /** Format: int64 */
+            avgCost?: number;
+            unitName?: string | null;
+            stockStatus?: string | null;
+        };
+        GoodsReceiptListResult: {
+            items?: components["schemas"]["GoodsReceiptListDto"][] | null;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            pageSize?: number;
+            /** Format: int32 */
+            readonly totalPages?: number;
+            readonly hasNextPage?: boolean;
+            readonly hasPreviousPage?: boolean;
+            summary?: components["schemas"]["GoodsReceiptListSummaryDto"];
+        };
+        GoodsReceiptListSummaryDto: {
+            /** Format: double */
+            totalAmount?: number;
+            /** Format: double */
+            totalImportCost?: number;
+            /** Format: double */
+            totalPaid?: number;
+            /** Format: double */
+            totalDebt?: number;
+        };
+        GoodsReceiptListDto: {
+            /** Format: uuid */
+            id?: string;
+            code?: string | null;
+            /** Format: uuid */
+            branchId?: string;
+            branchName?: string | null;
+            /** Format: uuid */
+            supplierId?: string | null;
+            supplierName?: string | null;
+            /** Format: uuid */
+            purchaseOrderId?: string | null;
+            /** Format: date */
+            receiptDate?: string;
+            status?: string | null;
+            source?: string | null;
+            /** Format: double */
+            totalAmount?: number;
+            /** Format: double */
+            discountAmount?: number;
+            /** Format: double */
+            shippingFee?: number;
+            /** Format: double */
+            taxAmount?: number;
+            /** Format: double */
+            grandTotal?: number;
+            /** Format: int32 */
+            lineCount?: number;
+            /** Format: int32 */
+            totalQuantity?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            createdByName?: string | null;
+            /** Format: double */
+            paidAmount?: number;
+            paymentStatus?: string | null;
+            /** Format: date */
+            paymentDueDate?: string | null;
+            paymentMethod?: string | null;
+            /** Format: double */
+            deductFromPo?: number;
+            paymentBreakdown?: components["schemas"]["PaymentRowDto"][] | null;
+            hasReturnableLines?: boolean;
+            returnStatus?: string | null;
+            /** Format: double */
+            importCostTotal?: number;
+            notes?: string | null;
+            /** Format: date-time */
+            postedAt?: string | null;
+            supplierInfo?: components["schemas"]["SupplierListInfoDto"];
+            paymentBankLabel?: string | null;
+        };
+        SupplierListInfoDto: {
+            code?: string | null;
+            phone?: string | null;
+            email?: string | null;
+            taxCode?: string | null;
+            contactPerson?: string | null;
+            contactPhone?: string | null;
+            address?: string | null;
+            category?: string | null;
+            /** Format: double */
+            totalDebt?: number;
         };
         CustomerListResult: {
             items?: components["schemas"]["CustomerListDto"][] | null;
@@ -4872,12 +5347,48 @@ export interface components {
             /** Format: date-time */
             lastCalledAt?: string | null;
             tags?: components["schemas"]["OpportunityTagDto"][] | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
         };
         OpportunityTagDto: {
             /** Format: uuid */
             id?: string;
             name?: string | null;
             color?: string | null;
+        };
+        OpportunityChangesResult: {
+            items?: components["schemas"]["OpportunityChangeDto"][] | null;
+            nextCursor?: string | null;
+            hasMore?: boolean;
+        };
+        OpportunityChangeDto: {
+            /** Format: uuid */
+            id?: string;
+            code?: string | null;
+            /** Format: uuid */
+            contactId?: string | null;
+            /** Format: uuid */
+            pipelineId?: string;
+            /** Format: uuid */
+            pipelineStageId?: string;
+            /** Format: double */
+            estimatedValue?: number | null;
+            /** Format: int32 */
+            probability?: number | null;
+            /** Format: date */
+            expectedCloseDate?: string;
+            /** Format: uuid */
+            assigneeId?: string;
+            status?: string | null;
+            /** Format: date-time */
+            wonAt?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            isDeleted?: boolean;
+            /** Format: date-time */
+            deletedAt?: string | null;
         };
         ContactListStatsDto: {
             /** Format: int32 */
@@ -4893,6 +5404,36 @@ export interface components {
             byContactStatus?: {
                 [key: string]: number;
             } | null;
+        };
+        ContactChangesResult: {
+            items?: components["schemas"]["ContactChangeDto"][] | null;
+            nextCursor?: string | null;
+            hasMore?: boolean;
+        };
+        ContactChangeDto: {
+            /** Format: uuid */
+            id?: string;
+            code?: string | null;
+            contactType?: string | null;
+            lifecycleStage?: string | null;
+            city?: string | null;
+            provinceCode?: string | null;
+            /** Format: uuid */
+            assigneeId?: string | null;
+            /** Format: uuid */
+            branchId?: string | null;
+            /** Format: uuid */
+            sourceId?: string | null;
+            /** Format: int32 */
+            leadScore?: number;
+            leadTier?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            isDeleted?: boolean;
+            /** Format: date-time */
+            deletedAt?: string | null;
         };
         ContactBranchLookupDto: {
             /** Format: uuid */
@@ -5013,6 +5554,8 @@ export interface components {
             slaStage?: number;
             /** Format: date-time */
             slaContactedAt?: string | null;
+            /** Format: date-time */
+            updatedAt?: string | null;
         };
         ContactChatSummaryDto: {
             /** Format: int32 */
@@ -7885,6 +8428,34 @@ export interface operations {
             };
         };
     };
+    cashbook_transactions_list: {
+        parameters: {
+            query?: {
+                accountId?: string;
+                transactionType?: string;
+                dateFrom?: string;
+                dateTo?: string;
+                pageNumber?: number;
+                pageSize?: number;
+                bankAccountIds?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
     customers_list: {
         parameters: {
             query?: {
@@ -7926,6 +8497,106 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CustomerListResult"];
+                };
+            };
+        };
+    };
+    goods_receipts_list: {
+        parameters: {
+            query?: {
+                search?: string;
+                branchId?: string;
+                supplierId?: string;
+                purchaseOrderId?: string;
+                status?: string;
+                source?: string;
+                paymentStatus?: string;
+                fromDate?: string;
+                toDate?: string;
+                pageNumber?: number;
+                pageSize?: number;
+                sortBy?: string;
+                totalFrom?: number;
+                totalTo?: number;
+                columnFilters?: {
+                    [key: string]: string;
+                };
+                bankAccountId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptListResult"];
+                };
+            };
+        };
+    };
+    inventory_get: {
+        parameters: {
+            query?: {
+                branchId?: string;
+                productId?: string;
+                status?: string;
+                pageNumber?: number;
+                pageSize?: number;
+                search?: string;
+                sortBy?: string;
+                sortDir?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedResultOfInventoryItemDto"];
+                };
+            };
+        };
+    };
+    inventory_movements_list: {
+        parameters: {
+            query?: {
+                branchId?: string;
+                group?: string;
+                productId?: string;
+                search?: string;
+                dateFrom?: string;
+                dateTo?: string;
+                pageNumber?: number;
+                pageSize?: number;
+                sortBy?: string;
+                sortDir?: string;
+                categoryId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockMovementListResult"];
                 };
             };
         };
@@ -7998,6 +8669,39 @@ export interface operations {
             };
         };
     };
+    orders_changes_list: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                updatedSince?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderChangesResult"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
     sales_orders_list: {
         parameters: {
             query?: {
@@ -8036,6 +8740,7 @@ export interface operations {
                 bankAccountId?: string;
                 unassigned?: boolean;
                 approved?: boolean;
+                updatedSince?: string;
             };
             header?: never;
             path?: never;
@@ -8092,6 +8797,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    order_returns_list: {
+        parameters: {
+            query?: {
+                status?: string;
+                pageNumber?: number;
+                pageSize?: number;
+                orderId?: string;
+                returnType?: string;
+                dateFrom?: string;
+                dateTo?: string;
+                search?: string;
+                branchId?: string;
+                reason?: string;
+                sortBy?: string;
+                crmContactId?: string;
+                outletId?: string;
+                refundBankAccountId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderReturnListResult"];
                 };
             };
         };
@@ -8498,6 +9238,7 @@ export interface operations {
                 branchId?: string;
                 allBranches?: boolean;
                 slaOverdue?: boolean;
+                updatedSince?: string;
             };
             header?: never;
             path?: never;
@@ -8627,6 +9368,30 @@ export interface operations {
             };
         };
     };
+    contacts_changes_list: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                updatedSince?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactChangesResult"];
+                };
+            };
+        };
+    };
     contacts_facets_list: {
         parameters: {
             query?: {
@@ -8705,6 +9470,30 @@ export interface operations {
             };
         };
     };
+    opportunities_changes_list: {
+        parameters: {
+            query?: {
+                cursor?: string;
+                updatedSince?: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpportunityChangesResult"];
+                };
+            };
+        };
+    };
     opportunities_list: {
         parameters: {
             query?: {
@@ -8730,6 +9519,7 @@ export interface operations {
                 sortBy?: string;
                 nextCallFrom?: string;
                 nextCallTo?: string;
+                updatedSince?: string;
             };
             header?: never;
             path?: never;

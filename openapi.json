@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NextX Open Platform API",
-    "version": "2026-11-05",
+    "version": "2026-11-05.3",
     "description": "API công khai cho đối tác — sinh tự động từ mã nguồn các phân hệ. Xác thực: OAuth 2.0 (Bearer) hoặc khoá API. https://developers.nextx.vn"
   },
   "servers": [
@@ -4342,6 +4342,93 @@
         "operationId": "subscriptions_list"
       }
     },
+    "/api/v1/sales/cashbook/transactions": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Danh sách bút toán quỹ (append-only)",
+        "description": "Nguồn của báo cáo dòng tiền. Lọc theo quỹ, loại giao dịch (CREDIT/DEBIT), khoảng ngày, tài khoản ngân hàng.",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "transactionType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "bankAccountIds",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "x-scope": "sales.cashbook.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_list_cash_transactions",
+        "operationId": "cashbook_transactions_list"
+      }
+    },
     "/api/v1/sales/customers": {
       "get": {
         "tags": [
@@ -4556,6 +4643,369 @@
         ],
         "x-mcp-tool": "sales_list_customers",
         "operationId": "customers_list"
+      }
+    },
+    "/api/v1/sales/goods-receipts": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Danh sách phiếu nhập",
+        "description": "Hỗ trợ search theo mã phiếu, filter branch/supplier/status, pagination.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "supplierId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "purchaseOrderId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "totalFrom",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "totalTo",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "columnFilters",
+            "in": "query",
+            "style": "deepObject",
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "bankAccountId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoodsReceiptListResult"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.goods_receipts.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_list_goods_receipts",
+        "operationId": "goods_receipts_list"
+      }
+    },
+    "/api/v1/sales/inventory": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Tồn kho hiện tại theo chi nhánh",
+        "description": "Tổng hợp tồn kho theo chi nhánh (nguồn stock_by_branch). Filter: branchId, productId, status (out_of_stock|low_stock|in_stock), search (mã hoặc tên SP). sortBy: sku|name|onhand|reserved|available|avgcost|status (mặc định tên SP tăng dần), sortDir: asc|desc. Lọc/sắp xếp/phân trang chạy dưới SQL. pageSize = 0 → lấy TẤT CẢ.",
+        "parameters": [
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDir",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfInventoryItemDto"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.inventory.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_list_inventory",
+        "operationId": "inventory_get"
+      }
+    },
+    "/api/v1/sales/inventory/movements": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Sổ cái biến động tồn kho toàn cục",
+        "description": "Hợp nhất nhập–xuất vật lý (stock_movements) + đặt giữ (stock_reservations) của mọi sản phẩm. Filter: branchId, group (RECEIPT/ISSUE/RETURN/ADJUST/TRANSFER/DISPOSAL/RESERVE), productId, search, dateFrom, dateTo. Mặc định FE lọc theo chi nhánh đang chọn. Server resolve sẵn tên SP / kho / người tạo / mã chứng từ. sortBy: quantity/type/before/balance/document (mặc định thời gian desc); sortDir: asc/desc. Tên SP / SKU / kho / người tạo / khách / nhóm hàng KHÔNG sort được: chúng được gắn SAU khi phân trang. categoryId: lọc theo nhóm hàng hoá (gồm cả nhóm con); mỗi dòng trả kèm categoryId/categoryName.",
+        "parameters": [
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortDir",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockMovementListResult"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.inventory.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_list_stock_movements",
+        "operationId": "inventory_movements_list"
       }
     },
     "/api/v1/sales/orders/stats": {
@@ -4822,6 +5272,70 @@
         "operationId": "orders_export_get"
       }
     },
+    "/api/v1/sales/orders/changes": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Thay đổi đơn hàng để tải tăng dần",
+        "description": "Phân trang bằng cursor, không đếm và không tính tổng. Có đơn đã xoá (isDeleted). Lần đầu truyền updatedSince, các lần sau truyền nextCursor. limit tối đa 1000.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 500
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderChangesResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.orders.view",
+        "x-auth": [
+          "oauth_user",
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_get_order",
+        "operationId": "orders_changes_list"
+      }
+    },
     "/api/v1/sales/orders": {
       "get": {
         "tags": [
@@ -5085,6 +5599,14 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
           }
         ],
         "responses": {
@@ -5173,6 +5695,144 @@
         ],
         "x-mcp-tool": "sales_get_order",
         "operationId": "orders_get"
+      }
+    },
+    "/api/v1/sales/order-returns": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Danh sách đơn hoàn trả",
+        "description": "Filter: status, orderId, returnType, branchId, date range, reason (lý do trả hàng — so khớp chính xác), crmContactId, outletId (match cả phiếu tự ghi lẫn phiếu suy từ đơn gốc). Tìm kiếm theo mã phiếu hoàn.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "returnType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "reason",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "crmContactId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "outletId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "refundBankAccountId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderReturnListResult"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.customer_returns.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_list_order_returns",
+        "operationId": "order_returns_list"
       }
     },
     "/api/v1/sales/products/stats": {
@@ -6458,6 +7118,14 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
           }
         ],
         "responses": {
@@ -6557,6 +7225,59 @@
         ],
         "x-mcp-tool": "get_contact",
         "operationId": "contacts_branch_lookup_get"
+      }
+    },
+    "/api/v1/crm/contacts/changes": {
+      "get": {
+        "tags": [
+          "crm"
+        ],
+        "summary": "Thay đổi contacts để tải tăng dần",
+        "description": "Phân trang bằng cursor, không đếm. Có bản ghi đã xoá (isDeleted), không có tên, SĐT, email. limit tối đa 1000.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 500
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactChangesResult"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "crm.contacts.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "get_contact",
+        "operationId": "contacts_changes_list"
       }
     },
     "/api/v1/crm/contacts/facets": {
@@ -6683,6 +7404,59 @@
         ],
         "x-mcp-tool": "get_contact",
         "operationId": "contacts_get"
+      }
+    },
+    "/api/v1/crm/opportunities/changes": {
+      "get": {
+        "tags": [
+          "crm"
+        ],
+        "summary": "Thay đổi cơ hội để tải tăng dần",
+        "description": "Phân trang bằng cursor, không đếm. Có bản ghi đã xoá (isDeleted). limit tối đa 1000.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 500
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunityChangesResult"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "crm.opportunities.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "crm_opportunity_changes",
+        "operationId": "opportunities_changes_list"
       }
     },
     "/api/v1/crm/opportunities": {
@@ -6864,6 +7638,14 @@
             "schema": {
               "type": "string",
               "format": "date"
+            }
+          },
+          {
+            "name": "updatedSince",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
             }
           }
         ],
@@ -13743,6 +14525,384 @@
         },
         "additionalProperties": false
       },
+      "OrderReturnListResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderReturnListDto"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "summary": {
+            "$ref": "#/components/schemas/OrderReturnListSummaryDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderReturnListSummaryDto": {
+        "type": "object",
+        "properties": {
+          "totalRefund": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalGrandTotal": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderReturnListDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "returnCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "returnType": {
+            "type": "string",
+            "nullable": true
+          },
+          "refundAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "refundMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isFullReturn": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "grandTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "refundPercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "createdByName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "refundPaymentRows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderReturnRefundPaymentRowDto"
+            },
+            "nullable": true
+          },
+          "settlementAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "settlementDirection": {
+            "type": "string",
+            "nullable": true
+          },
+          "settledAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "settledPaymentRows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderReturnRefundPaymentRowDto"
+            },
+            "nullable": true
+          },
+          "exchangeNewOrderId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "exchangeGrandTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "priceDiff": {
+            "type": "number",
+            "format": "double"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "crmContactId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "outletId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "maxCashRefund": {
+            "type": "number",
+            "format": "double"
+          },
+          "forceFullCashRefund": {
+            "type": "boolean"
+          },
+          "refundBankAccountId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "refundBankAccountLabel": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchName": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "assignedToName": {
+            "type": "string",
+            "nullable": true
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderAssigneeDto"
+            },
+            "nullable": true
+          },
+          "receivingBranchIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "receivingBranchNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "deliveryEmployee": {
+            "$ref": "#/components/schemas/UserRefDto"
+          },
+          "deliveredAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "customerCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerInfo": {
+            "$ref": "#/components/schemas/OrderListCustomerInfoDto"
+          },
+          "outletInfo": {
+            "$ref": "#/components/schemas/OrderListOutletInfoDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderListOutletInfoDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "channelCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "tier": {
+            "type": "string",
+            "nullable": true
+          },
+          "repNames": {
+            "type": "string",
+            "nullable": true
+          },
+          "routeNames": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxCode": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderListCustomerInfoDto": {
+        "type": "object",
+        "properties": {
+          "groupName": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "companyName": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "netDebt": {
+            "type": "number",
+            "format": "double"
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserRefDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderAssigneeDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "commissionPercent": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderReturnRefundPaymentRowDto": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "OrderDetailDto": {
         "type": "object",
         "properties": {
@@ -14296,38 +15456,6 @@
           "amount": {
             "type": "number",
             "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "OrderAssigneeDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "commissionPercent": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserRefDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
           }
         },
         "additionalProperties": false
@@ -14965,81 +16093,10 @@
           "receivingBankLabel": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "OrderListOutletInfoDto": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string",
-            "nullable": true
           },
-          "name": {
+          "updatedAt": {
             "type": "string",
-            "nullable": true
-          },
-          "ownerName": {
-            "type": "string",
-            "nullable": true
-          },
-          "ownerPhone": {
-            "type": "string",
-            "nullable": true
-          },
-          "address": {
-            "type": "string",
-            "nullable": true
-          },
-          "channelCode": {
-            "type": "string",
-            "nullable": true
-          },
-          "tier": {
-            "type": "string",
-            "nullable": true
-          },
-          "repNames": {
-            "type": "string",
-            "nullable": true
-          },
-          "routeNames": {
-            "type": "string",
-            "nullable": true
-          },
-          "taxCode": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "OrderListCustomerInfoDto": {
-        "type": "object",
-        "properties": {
-          "groupName": {
-            "type": "string",
-            "nullable": true
-          },
-          "email": {
-            "type": "string",
-            "nullable": true
-          },
-          "companyName": {
-            "type": "string",
-            "nullable": true
-          },
-          "taxCode": {
-            "type": "string",
-            "nullable": true
-          },
-          "netDebt": {
-            "type": "number",
-            "format": "double"
-          },
-          "ownerName": {
-            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         },
@@ -15075,6 +16132,116 @@
           },
           "bankAccountLabel": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderChangesResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderChangeDto"
+            },
+            "nullable": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OrderChangeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderType": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "crmContactId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "subtotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "shippingFee": {
+            "type": "number",
+            "format": "double"
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "paidAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "channelCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "cancelledAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         },
@@ -15118,6 +16285,513 @@
             "format": "double"
           },
           "debtAmount": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StockMovementListResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockMovementListDto"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "summary": {
+            "$ref": "#/components/schemas/StockMovementListSummaryDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StockMovementListSummaryDto": {
+        "type": "object",
+        "properties": {
+          "totalIn": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalOut": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalValue": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StockMovementListDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "movementType": {
+            "type": "string",
+            "nullable": true
+          },
+          "group": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "beforeQuantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "afterQuantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "branchName": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceType": {
+            "type": "string",
+            "nullable": true
+          },
+          "referenceId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "referenceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "customerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "createdByName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isReversal": {
+            "type": "boolean"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "unitCost": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "categoryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "categoryName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PagedResultOfInventoryItemDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventoryItemDto"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InventoryItemDto": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "productName": {
+            "type": "string",
+            "nullable": true
+          },
+          "productType": {
+            "type": "string",
+            "nullable": true
+          },
+          "qtyOnHand": {
+            "type": "number",
+            "format": "double"
+          },
+          "qtyReserved": {
+            "type": "number",
+            "format": "double"
+          },
+          "qtyAvailable": {
+            "type": "number",
+            "format": "double"
+          },
+          "avgCost": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "unitName": {
+            "type": "string",
+            "nullable": true
+          },
+          "stockStatus": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "GoodsReceiptListResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoodsReceiptListDto"
+            },
+            "nullable": true
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32",
+            "readOnly": true
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "summary": {
+            "$ref": "#/components/schemas/GoodsReceiptListSummaryDto"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GoodsReceiptListSummaryDto": {
+        "type": "object",
+        "properties": {
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalImportCost": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalPaid": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDebt": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GoodsReceiptListDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "branchName": {
+            "type": "string",
+            "nullable": true
+          },
+          "supplierId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "supplierName": {
+            "type": "string",
+            "nullable": true
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "receiptDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "shippingFee": {
+            "type": "number",
+            "format": "double"
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "grandTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "lineCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdByName": {
+            "type": "string",
+            "nullable": true
+          },
+          "paidAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "paymentDueDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true
+          },
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "deductFromPo": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentBreakdown": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentRowDto"
+            },
+            "nullable": true
+          },
+          "hasReturnableLines": {
+            "type": "boolean"
+          },
+          "returnStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "importCostTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "postedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "supplierInfo": {
+            "$ref": "#/components/schemas/SupplierListInfoDto"
+          },
+          "paymentBankLabel": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SupplierListInfoDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPerson": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalDebt": {
             "type": "number",
             "format": "double"
           }
@@ -16073,6 +17747,11 @@
               "$ref": "#/components/schemas/OpportunityTagDto"
             },
             "nullable": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -16090,6 +17769,96 @@
           },
           "color": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpportunityChangesResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpportunityChangeDto"
+            },
+            "nullable": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpportunityChangeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "pipelineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pipelineStageId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "estimatedValue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "probability": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "expectedCloseDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "assigneeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "wonAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         },
@@ -16128,6 +17897,95 @@
               "type": "integer",
               "format": "int32"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactChangesResult": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactChangeDto"
+            },
+            "nullable": true
+          },
+          "nextCursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContactChangeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactType": {
+            "type": "string",
+            "nullable": true
+          },
+          "lifecycleStage": {
+            "type": "string",
+            "nullable": true
+          },
+          "city": {
+            "type": "string",
+            "nullable": true
+          },
+          "provinceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "assigneeId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sourceId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "leadScore": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "leadTier": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         },
@@ -16498,6 +18356,11 @@
             "format": "int32"
           },
           "slaContactedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedAt": {
             "type": "string",
             "format": "date-time",
             "nullable": true
