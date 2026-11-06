@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "NextX Open Platform API",
-    "version": "2026-11-05.3",
+    "version": "2026-11-07",
     "description": "API công khai cho đối tác — sinh tự động từ mã nguồn các phân hệ. Xác thực: OAuth 2.0 (Bearer) hoặc khoá API. https://developers.nextx.vn"
   },
   "servers": [
@@ -18974,6 +18974,52 @@
           "referralCodeId": {
             "type": "string",
             "format": "uuid",
+            "nullable": true
+          },
+          "industryId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "customerGroupId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "nullable": true
+          },
+          "provinceCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "districtCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "wardCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPersonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPersonPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "contactPersonRelationship": {
+            "type": "string",
             "nullable": true
           }
         },

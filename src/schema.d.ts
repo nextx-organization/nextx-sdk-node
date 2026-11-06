@@ -5745,6 +5745,18 @@ export interface components {
             bankBranch?: string | null;
             /** Format: uuid */
             referralCodeId?: string | null;
+            /** Format: uuid */
+            industryId?: string | null;
+            /** Format: uuid */
+            customerGroupId?: string | null;
+            tagIds?: string[] | null;
+            provinceCode?: string | null;
+            districtCode?: string | null;
+            wardCode?: string | null;
+            notes?: string | null;
+            contactPersonName?: string | null;
+            contactPersonPhone?: string | null;
+            contactPersonRelationship?: string | null;
         };
         EnrichmentSuggestionDto: {
             /** Format: uuid */

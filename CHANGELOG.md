@@ -2,6 +2,21 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.3.6 (2026-11-07)
+
+### Thêm mới
+
+- `#/CreateContactRequest`: Thêm trường industryId
+- `#/CreateContactRequest`: Thêm trường customerGroupId
+- `#/CreateContactRequest`: Thêm trường tagIds
+- `#/CreateContactRequest`: Thêm trường provinceCode
+- `#/CreateContactRequest`: Thêm trường districtCode
+- `#/CreateContactRequest`: Thêm trường wardCode
+- `#/CreateContactRequest`: Thêm trường notes
+- `#/CreateContactRequest`: Thêm trường contactPersonName
+- `#/CreateContactRequest`: Thêm trường contactPersonPhone
+- `#/CreateContactRequest`: Thêm trường contactPersonRelationship
+
 ## 0.3.5
 
 - Sửa quyền của API trả hàng thành `sales.customer_returns.view`.
