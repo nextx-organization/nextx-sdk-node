@@ -2,6 +2,13 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.3.7 (2026-11-07)
+
+### Thêm mới
+
+- `POST /api/v1/sales/open/orders`: đẩy đơn từ hệ thống bên ngoài (idempotent theo `externalOrderId`).
+- `GET /api/v1/sales/open/orders/{externalOrderId}`: tra trạng thái đơn theo mã đơn ngoài.
+
 ## 0.3.6 (2026-11-07)
 
 ### Thêm mới

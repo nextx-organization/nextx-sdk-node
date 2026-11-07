@@ -5008,6 +5008,130 @@
         "operationId": "inventory_movements_list"
       }
     },
+    "/api/v1/sales/open/orders": {
+      "post": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Đẩy đơn từ hệ thống ngoài",
+        "description": "Idempotent theo externalOrderId: gửi lại trả đơn cũ (200, idempotentReplay=true). Khách tìm theo SĐT; chưa có thì tự tạo nếu nhà bật cài đặt. Sản phẩm theo productId hoặc sku.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOpenApiOrderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiOrderStatusDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiOrderStatusDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.orders.create",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_push_order",
+        "operationId": "open_orders_create"
+      }
+    },
+    "/api/v1/sales/open/orders/{externalOrderId}": {
+      "get": {
+        "tags": [
+          "sales"
+        ],
+        "summary": "Tra trạng thái đơn theo mã đơn ngoài",
+        "description": "Trả trạng thái đơn, thanh toán (UNPAID/PARTIAL/PAID, đã trả, còn nợ) và vận chuyển (hãng, mã vận đơn, trạng thái).",
+        "parameters": [
+          {
+            "name": "externalOrderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenApiOrderStatusDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "x-scope": "sales.orders.view",
+        "x-auth": [
+          "api_key"
+        ],
+        "x-mcp-tool": "sales_get_pushed_order",
+        "operationId": "open_orders_get"
+      }
+    },
     "/api/v1/sales/orders/stats": {
       "get": {
         "tags": [
@@ -16287,6 +16411,218 @@
           "debtAmount": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenApiOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "externalOrderId": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "total": {
+            "type": "number",
+            "format": "double"
+          },
+          "paidAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "debtAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "paymentStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryStatus": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveredAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "shipment": {
+            "$ref": "#/components/schemas/OpenApiOrderShipmentDto"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "idempotentReplay": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenApiOrderShipmentDto": {
+        "type": "object",
+        "properties": {
+          "carrierCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "trackingCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "shippingFee": {
+            "type": "number",
+            "format": "double"
+          },
+          "codAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateOpenApiOrderRequest": {
+        "type": "object",
+        "properties": {
+          "externalOrderId": {
+            "type": "string",
+            "nullable": true
+          },
+          "branchId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "customer": {
+            "$ref": "#/components/schemas/OpenApiOrderCustomerRequest"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OpenApiOrderItemRequest"
+            },
+            "nullable": true
+          },
+          "shippingFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paidAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "codAmount": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "paymentMethod": {
+            "type": "string",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryPhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryAddressLine": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryProvince": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryDistrict": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryWard": {
+            "type": "string",
+            "nullable": true
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenApiOrderItemRequest": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "sku": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double"
+          },
+          "unitPrice": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "OpenApiOrderCustomerRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

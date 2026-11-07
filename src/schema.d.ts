@@ -1279,6 +1279,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/open/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Đẩy đơn từ hệ thống ngoài
+         * @description Idempotent theo externalOrderId: gửi lại trả đơn cũ (200, idempotentReplay=true). Khách tìm theo SĐT; chưa có thì tự tạo nếu nhà bật cài đặt. Sản phẩm theo productId hoặc sku.
+         */
+        post: operations["open_orders_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/open/orders/{externalOrderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tra trạng thái đơn theo mã đơn ngoài
+         * @description Trả trạng thái đơn, thanh toán (UNPAID/PARTIAL/PAID, đã trả, còn nợ) và vận chuyển (hãng, mã vận đơn, trạng thái).
+         */
+        get: operations["open_orders_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/orders/stats": {
         parameters: {
             query?: never;
@@ -4811,6 +4851,76 @@ export interface components {
             paidAmount?: number;
             /** Format: double */
             debtAmount?: number;
+        };
+        OpenApiOrderStatusDto: {
+            /** Format: uuid */
+            orderId?: string;
+            orderCode?: string | null;
+            externalOrderId?: string | null;
+            status?: string | null;
+            /** Format: double */
+            total?: number;
+            /** Format: double */
+            paidAmount?: number;
+            /** Format: double */
+            debtAmount?: number;
+            paymentStatus?: string | null;
+            deliveryStatus?: string | null;
+            /** Format: date-time */
+            deliveredAt?: string | null;
+            shipment?: components["schemas"]["OpenApiOrderShipmentDto"];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string | null;
+            idempotentReplay?: boolean;
+        };
+        OpenApiOrderShipmentDto: {
+            carrierCode?: string | null;
+            trackingCode?: string | null;
+            status?: string | null;
+            /** Format: double */
+            shippingFee?: number;
+            /** Format: double */
+            codAmount?: number | null;
+        };
+        CreateOpenApiOrderRequest: {
+            externalOrderId?: string | null;
+            /** Format: uuid */
+            branchId?: string | null;
+            customer?: components["schemas"]["OpenApiOrderCustomerRequest"];
+            items?: components["schemas"]["OpenApiOrderItemRequest"][] | null;
+            /** Format: double */
+            shippingFee?: number | null;
+            /** Format: double */
+            paidAmount?: number | null;
+            /** Format: double */
+            codAmount?: number | null;
+            paymentMethod?: string | null;
+            notes?: string | null;
+            deliveryName?: string | null;
+            deliveryPhone?: string | null;
+            deliveryAddressLine?: string | null;
+            deliveryProvince?: string | null;
+            deliveryDistrict?: string | null;
+            deliveryWard?: string | null;
+            /** Format: date-time */
+            orderDate?: string | null;
+        };
+        OpenApiOrderItemRequest: {
+            /** Format: uuid */
+            productId?: string | null;
+            sku?: string | null;
+            /** Format: double */
+            quantity?: number;
+            /** Format: double */
+            unitPrice?: number | null;
+            note?: string | null;
+        };
+        OpenApiOrderCustomerRequest: {
+            fullName?: string | null;
+            phone?: string | null;
+            email?: string | null;
         };
         StockMovementListResult: {
             items?: components["schemas"]["StockMovementListDto"][] | null;
@@ -8609,6 +8719,97 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StockMovementListResult"];
+                };
+            };
+        };
+    };
+    open_orders_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreateOpenApiOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenApiOrderStatusDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenApiOrderStatusDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Content */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    open_orders_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                externalOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OpenApiOrderStatusDto"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
                 };
             };
         };
