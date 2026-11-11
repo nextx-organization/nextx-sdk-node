@@ -2,6 +2,12 @@
 
 Theo [Semantic Versioning](https://semver.org/lang/vi/). Chính sách phiên bản: [VERSIONING.md](VERSIONING.md).
 
+## 0.3.8 (2026-11-11)
+
+### Sửa mô tả
+
+- `(chung)`: Đổi mô tả/ví dụ
+
 ## 0.3.7 (2026-11-07)
 
 ### Thêm mới

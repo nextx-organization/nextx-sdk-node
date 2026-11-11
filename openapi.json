@@ -5387,12 +5387,11 @@
             }
           }
         },
-        "x-scope": "sales.orders.view",
+        "x-scope": "sales.orders.export",
         "x-auth": [
-          "oauth_user",
           "api_key"
         ],
-        "x-mcp-tool": "sales_get_order",
+        "x-mcp-tool": "sales_export_orders",
         "operationId": "orders_export_get"
       }
     },
@@ -6458,12 +6457,11 @@
             "description": "Accepted"
           }
         },
-        "x-scope": "sales.products.view",
+        "x-scope": "sales.products.export",
         "x-auth": [
-          "oauth_user",
           "api_key"
         ],
-        "x-mcp-tool": "sales_get_product",
+        "x-mcp-tool": "sales_export_products",
         "operationId": "products_export_get"
       }
     },
